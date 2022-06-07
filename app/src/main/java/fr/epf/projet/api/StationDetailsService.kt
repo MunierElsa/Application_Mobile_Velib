@@ -1,6 +1,5 @@
 package fr.epf.projet.api
 
-import fr.epf.projet.model.Station
 import retrofit2.http.GET
 
 interface StationDetailsService {
@@ -9,8 +8,9 @@ interface StationDetailsService {
     suspend fun getDetails(): GetDetailsResult
 
 }
+
 data class GetDetailsResult(val data: StationsDetails)
-data class StationsDetails(val stations : List<Details>)
+data class StationsDetails(val stations: List<Details>)
 data class Details(
     val station_id: Long,
     val is_installed: Int,

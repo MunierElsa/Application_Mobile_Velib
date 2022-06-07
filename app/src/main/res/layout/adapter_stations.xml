@@ -2,23 +2,22 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_margin="8dp"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:paddingStart="10dp"
+        android:background="@color/green"
         android:orientation="vertical"
-        android:background="@color/green">
+        android:paddingStart="10dp">
 
         <TextView
             android:id="@+id/name_textView"
             android:layout_width="match_parent"
             android:layout_height="25dp"
-            android:textSize="16dp"
-            android:layout_gravity="center">
-        </TextView>
+            android:layout_gravity="center"
+            android:textSize="16dp"></TextView>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -26,71 +25,56 @@
             android:orientation="horizontal">
 
             <TextView
-                android:layout_width="40dp"
-                android:layout_height="wrap_content"
+                android:layout_width="30dp"
+                android:layout_height="20dp"
                 android:text="@string/station_status"
                 android:textSize="10dp"></TextView>
 
             <TextView
-                android:id="@+id/is_installed_textView"
-                android:layout_width="60dp"
+                android:id="@+id/status_textView"
+                android:layout_width="300dp"
                 android:layout_height="20dp"
                 android:layout_gravity="center"
-                android:layout_marginLeft="8dp"
-                android:textSize="10dp"></TextView>
-
-            <TextView
-                android:id="@+id/is_renting_textView"
-                android:layout_width="80dp"
-                android:layout_height="20dp"
-                android:layout_gravity="center"
-                android:textSize="10dp"></TextView>
-
-            <TextView
-                android:id="@+id/is_returning_textView"
-                android:layout_width="90dp"
-                android:layout_height="20dp"
-                android:layout_gravity="center"
-                android:layout_marginLeft="15dp"
+                android:layout_marginLeft="5dp"
                 android:textSize="10dp"></TextView>
         </LinearLayout>
-
-        <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <TextView
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:text="@string/station_numBikesAvailable"
-            android:textSize="10dp">
-        </TextView>
-        <TextView
-            android:id="@+id/numBikesAvailable_textView"
-            android:layout_width="100dp"
-            android:layout_height="20dp"
-            android:textSize="10dp"
-            android:layout_gravity="center">
-        </TextView>
-    </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:text="@string/station_numBikesAvailable"
+                android:textSize="10dp"></TextView>
+
+            <TextView
+                android:id="@+id/numBikesAvailable_textView"
+                android:layout_width="100dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center"
+                android:textSize="10dp"></TextView>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
             <TextView
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:text="@string/station_numDocksAvailable"
-                android:textSize="10dp">
-            </TextView>
+                android:textSize="10dp"></TextView>
+
             <TextView
                 android:id="@+id/numDocksAvailable_textView"
                 android:layout_width="100dp"
                 android:layout_height="20dp"
-                android:textSize="10dp"
-                android:layout_gravity="center">
-            </TextView>
+                android:layout_gravity="center"
+                android:textSize="10dp"></TextView>
         </LinearLayout>
 
 

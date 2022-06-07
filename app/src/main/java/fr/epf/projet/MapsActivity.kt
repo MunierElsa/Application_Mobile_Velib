@@ -7,7 +7,6 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
@@ -17,6 +16,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import fr.epf.projet.api.StationDetailsService
@@ -29,6 +29,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -44,7 +45,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         binding = ActivityMapsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
@@ -52,21 +52,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         if (checkForInternet(this)) {
             synchroApi()
         } else {
-            Toast.makeText(this, "Pas de connexion à internet", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Pas de connexion à internet", Toast.LENGTH_LONG).show()
         }
-
-
     }
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
     override fun onMapReady(googleMap: GoogleMap) {
         val db = Room.databaseBuilder(
             applicationContext,
@@ -74,18 +63,31 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         ).allowMainThreadQueries().build()
         mMap = googleMap
         mMap.setMinZoomPreference(10F)
-        for(i in stationslist){
-            if(db.stationDao().getStation(i.name)!= null) {
-                db.stationDao().update(i.name,i.numBikesAvailable,i.numDocksAvailable,i.is_returning,i.is_renting,i.is_installed)
-            }
+        for (i in stationslist) {
             val station = LatLng("${i.lat}".toDouble(), "${i.lon}".toDouble())
-            mMap.addMarker(MarkerOptions().position(station).title("${i.name}"))
+            if (db.stationDao().getStation(i.name) != null) {
+                db.stationDao().update(
+                    i.name,
+                    i.numBikesAvailable,
+                    i.numDocksAvailable,
+                    i.is_returning,
+                    i.is_renting,
+                    i.is_installed
+                )
+                mMap.addMarker(
+                    MarkerOptions().position(station).title("${i.name}")
+                        .icon(BitmapDescriptorFactory.defaultMarker(150F))
+                )
+            } else mMap.addMarker(
+                MarkerOptions().position(station).title("${i.name}")
+                    .icon(BitmapDescriptorFactory.defaultMarker(290F))
+            )
             mMap.moveCamera(CameraUpdateFactory.newLatLng(station))
-            mMap.setOnInfoWindowClickListener{
+            mMap.setOnInfoWindowClickListener {
                 val intent = Intent(this, DetailsActivity::class.java)
                 intent.putExtra("name", it.title)
-                for(j in stationslist){
-                    if(it.title.equals(j.name)){
+                for (j in stationslist) {
+                    if (it.title.equals(j.name)) {
                         intent.putExtra("station_id", j.station_id)
                         intent.putExtra("is_installed", j.is_installed)
                         intent.putExtra("is_renting", j.is_renting)
@@ -110,7 +112,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
-        when(id){
+        when (id) {
             R.id.favoris_list_actions -> {
                 startActivity(Intent(this, FavorisActivity::class.java))
             }
@@ -143,7 +145,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             val stations2 = result2.data.stations
 
             stations.map {
-                val(station_id, name, lat, lon, capacity, stationCode) = it
+                val (station_id, name, lat, lon, capacity, stationCode) = it
                 Coord(
                     station_id, name, lat, lon, capacity, stationCode
                 )
@@ -152,31 +154,51 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             }
 
             stations2.map {
-                val (station_id, is_installed, is_renting, is_returning, numBikesAvailable, numDocksAvailable)= it
+                val (station_id, is_installed, is_renting, is_returning, numBikesAvailable, numDocksAvailable) = it
 
                 Details(
-                    station_id, is_installed, is_renting, is_returning, numBikesAvailable, numDocksAvailable
+                    station_id,
+                    is_installed,
+                    is_renting,
+                    is_returning,
+                    numBikesAvailable,
+                    numDocksAvailable
                 )
 
 
-            }.map{
+            }.map {
                 listdetails.add(it)
             }
         }
 
-        for(i in listcoord){
-            for(j in listdetails)
-                if(i.station_id == j.station_id){
-                    stationslist.add(Station(
-                        i.station_id, i.name, i.lat, i.lon, i.capacity, i.stationCode, j.is_installed, j.is_renting, j.is_returning, j.numBikesAvailable, j.numDocksAvailable
-                    ))
+        for (i in listcoord) {
+            for (j in listdetails)
+                if (i.station_id == j.station_id) {
+                    stationslist.add(
+                        Station(
+                            i.station_id,
+                            i.name,
+                            i.lat,
+                            i.lon,
+                            i.capacity,
+                            i.stationCode,
+                            j.is_installed,
+                            j.is_renting,
+                            j.is_returning,
+                            j.numBikesAvailable,
+                            j.numDocksAvailable
+                        )
+                    )
                 }
         }
+        listdetails.clear()
+        listcoord.clear()
     }
 
     @SuppressLint("MissingPermission")
     private fun checkForInternet(context: Context): Boolean {
-        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             val network = connectivityManager.activeNetwork ?: return false
             val activeNetwork = connectivityManager.getNetworkCapabilities(network) ?: return false

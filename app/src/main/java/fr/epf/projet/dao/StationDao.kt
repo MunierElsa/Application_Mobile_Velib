@@ -21,5 +21,12 @@ interface StationDao {
     fun delete(station: Station)
 
     @Query("UPDATE Station SET numDocksAvailable=(:numDocksAvailable), numBikesAvailable=(:numBikesAvailable), is_returning=(:is_returning), is_renting=(:is_renting), is_installed=(:is_installed) WHERE name=(:name)")
-    fun update(name : String, numBikesAvailable : Int, numDocksAvailable : Int, is_returning : Int, is_renting : Int, is_installed : Int)
+    fun update(
+        name: String,
+        numBikesAvailable: Int,
+        numDocksAvailable: Int,
+        is_returning: Int,
+        is_renting: Int,
+        is_installed: Int
+    )
 }
